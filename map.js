@@ -17,7 +17,7 @@ const map = new mapboxgl.Map({
 map.on('load', async () => {
 
      const bikeLanePaint = {
-    'line-color': '#32D400',
+    'line-color': 'hsl(160, 30%, 60%)',
     'line-width': 4,
     'line-opacity': 0.8
   };
@@ -41,7 +41,7 @@ map.addLayer({
     data:
      'https://raw.githubusercontent.com/cambridgegis/cambridgegis_data/main/Recreation/Bike_Facilities/RECREATION_BikeFacilities.geojson'
   });
-  
+
   map.addLayer({
     id: 'bike-lanes-cambridge',
     type: 'line',
