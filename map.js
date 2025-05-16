@@ -1,4 +1,5 @@
 import mapboxgl from 'https://cdn.jsdelivr.net/npm/mapbox-gl@2.15.0/+esm';
+import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
 console.log('Mapbox GL JS Loaded:', mapboxgl);
 
@@ -50,5 +51,21 @@ map.addLayer({
   });
 
   console.log('Boston & Cambridge bike lanes added!');
+
+    let jsonData;
+    try {
+    const jsonurl = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
+
+    // Await JSON fetch via D3
+    const jsonData = await d3.json(jsonurl);
+    console.log('Loaded JSON Data:', jsonData); 
+
+    // Extract the nested stations array
+    const stations = jsonData.data.stations;
+    console.log('Stations Array:', stations);  
+    
+  } catch (error) {
+    console.error('Error loading JSON:', error); 
+  }
 
 });
