@@ -89,5 +89,13 @@ try {
     console.error('Error loading or drawing stations:', error);
   }
 
-  
+  try {
+  const trafficUrl = 'https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv';
+
+  const trips = await d3.csv(trafficUrl);
+  console.log('Loaded trips:', trips);  
+
+} catch (error) {
+  console.error('Error loading traffic CSV:', error);
+}
 });
