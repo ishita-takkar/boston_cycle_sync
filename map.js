@@ -15,6 +15,11 @@ const map = new mapboxgl.Map({
   maxZoom: 18, // Maximum allowed zoom
 });
 
+function getCoords(station) {
+  const p = map.project(new mapboxgl.LngLat(+station.Long, +station.Lat));
+  return { cx: p.x, cy: p.y };
+}
+
 map.on('load', async () => {
 
      const bikeLanePaint = {
@@ -52,29 +57,12 @@ map.addLayer({
 
   console.log('Boston & Cambridge bike lanes added!');
 
-    let jsonData;
-    try {
-    const jsonurl = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
-
-    // Await JSON fetch via D3
-    const jsonData = await d3.json(jsonurl);
-    console.log('Loaded JSON Data:', jsonData); 
-
-    // Extract the nested stations array
-    const stations = jsonData.data.stations;
-    console.log('Stations Array:', stations);  
-
-  } catch (error) {
-    console.error('Error loading JSON:', error); 
-  }
-
-    try {
-    const jsonurl  = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
-    const jsonData = await d3.json(jsonurl);
+try {
+    const url      = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
+    const jsonData = await d3.json(url);
     const stations = jsonData.data.stations;
 
     const svg = d3.select('#map').select('svg');
-
     const circles = svg.selectAll('circle')
       .data(stations)
       .enter()
@@ -84,11 +72,6 @@ map.addLayer({
         .attr('stroke', 'white')
         .attr('stroke-width', 1)
         .attr('opacity', 0.8);
-
-    function getCoords(station) {
-      const p = map.project(new mapboxgl.LngLat(+station.Long, +station.Lat));
-      return { cx: p.x, cy: p.y };
-    }
 
     function updatePositions() {
       circles
@@ -106,4 +89,5 @@ map.addLayer({
     console.error('Error loading or drawing stations:', error);
   }
 
+  
 });
