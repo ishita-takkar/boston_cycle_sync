@@ -203,5 +203,5 @@ map.on('load', async () => {
     console.error('Error loading data', error);
   }
 
-  console.log("Map & bike lanes fully loaded.");
+  console.log("lanes fully loaded.");
 });
