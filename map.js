@@ -57,28 +57,6 @@ map.on('load', async () => {
 
     const svg = d3.select('#map').select('svg');
 
-    const circles = svg.selectAll('circle')
-      .data(stations)
-      .enter()
-      .append('circle')
-        .attr('r', 5)
-        .attr('fill', 'steelblue')
-        .attr('stroke', 'white')
-        .attr('stroke-width', 1)
-        .attr('opacity', 0.8);
-
-    function updatePositions() {
-      circles
-        .attr('cx', d => getCoords(d).cx)
-        .attr('cy', d => getCoords(d).cy);
-    }
-
-    updatePositions();
-    map.on('move', updatePositions);
-    map.on('zoom', updatePositions);
-    map.on('resize', updatePositions);
-    map.on('moveend', updatePositions);
-
     const trafficUrl = 'https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv';
     const trips = await d3.csv(trafficUrl);
 
@@ -91,6 +69,38 @@ map.on('load', async () => {
       station.departures = departures.get(id) ?? 0;
       station.totalTraffic = station.arrivals + station.departures;
     });
+
+    const radiusScale = d3
+      .scaleSqrt()
+      .domain([0, d3.max(stations, (d) => d.totalTraffic)])
+      .range([0, 25]);
+
+    const circles = svg.selectAll('circle')
+      .data(stations)
+      .enter()
+      .append('circle')
+        .attr('r', d => radiusScale(d.totalTraffic))
+        .attr('fill', 'steelblue')
+        .attr('fill-opacity', 0.6)
+        .attr('stroke', 'white')
+        .attr('stroke-width', 1)
+      .each(function (d) {
+        d3.select(this)
+          .append('title')
+          .text(`${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`);
+      });
+
+    function updatePositions() {
+      circles
+        .attr('cx', d => getCoords(d).cx)
+        .attr('cy', d => getCoords(d).cy);
+    }
+
+    updatePositions();
+    map.on('move', updatePositions);
+    map.on('zoom', updatePositions);
+    map.on('resize', updatePositions);
+    map.on('moveend', updatePositions);
 
     console.log("Stations with traffic:", stations);
 

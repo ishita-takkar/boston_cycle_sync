@@ -23,5 +23,5 @@ body {
   width: 100%;
   height: 100%;
   z-index: 1;
-  pointer-events: none;  /* let map drags/clicks pass through */
+  pointer-events: auto;  /* let map drags/clicks pass through */
 }
