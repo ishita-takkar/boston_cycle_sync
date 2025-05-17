@@ -12,6 +12,9 @@ body {
   position: relative;
   width: 95vw;
   height: 90vh;
+  justify-content: center;  /* horizontally center */
+  align-items: center;      /* vertically center */
+  padding: 2rem;            /* space around the map */
 }
 
 #map svg {
