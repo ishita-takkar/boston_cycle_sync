@@ -25,3 +25,16 @@ body {
   z-index: 1;
   pointer-events: auto;  /* let map drags/clicks pass through */
 }
+
+header {
+  display: flex;
+  gap: 1em;
+  align-items: baseline;
+}
+#any-time {
+  font-style: italic;
+  color: grey;
+}
+#selected-time {
+  display: block;
+}
