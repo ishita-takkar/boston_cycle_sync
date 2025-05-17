@@ -15,7 +15,12 @@ const map = new mapboxgl.Map({
 });
 
 function getCoords(station) {
-  const p = map.project(new mapboxgl.LngLat(+station.Long, +station.Lat));
+  const lon = parseFloat(station.Long);
+  const lat = parseFloat(station.Lat);
+  if (isNaN(lon) || isNaN(lat)) {
+    return { cx: 0, cy: 0 };
+  }
+  const p = map.project(new mapboxgl.LngLat(lon, lat));
   return { cx: p.x, cy: p.y };
 }
 
@@ -53,7 +58,7 @@ map.on('load', async () => {
   try {
     const stationUrl = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
     const stationData = await d3.json(stationUrl);
-    const stations = stationData.data.stations;
+    const stations = stationData.data.stations.filter(d => d.Lat && d.Long);
 
     const svg = d3.select('#map').select('svg');
 
@@ -84,11 +89,11 @@ map.on('load', async () => {
         .attr('fill-opacity', 0.6)
         .attr('stroke', 'white')
         .attr('stroke-width', 1)
-      .each(function (d) {
-        d3.select(this)
-          .append('title')
-          .text(`${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`);
-      });
+        .each(function (d) {
+          d3.select(this)
+            .append('title')
+            .text(`${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`);
+        });
 
     function updatePositions() {
       circles
