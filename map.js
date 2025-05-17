@@ -59,6 +59,15 @@ let timeFilter = -1;
 let radiusScale, circles, stations, trips;
 
 map.on('load', async () => {
+  // Ensure SVG layer exists
+  const svg = d3.select('#map').append('svg')
+    .attr('width', '100%')
+    .attr('height', '100%')
+    .style('position', 'absolute')
+    .style('top', 0)
+    .style('left', 0)
+    .style('pointer-events', 'none');
+
   map.addSource('boston_route', {
     type: 'geojson',
     data: 'https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::existing-bike-network-2022.geojson',
@@ -96,7 +105,7 @@ map.on('load', async () => {
     const jsonData = await d3.json(jsonurl);
     stations = jsonData.data.stations;
 
-    let trips = await d3.csv('https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv', (trip) => {
+    trips = await d3.csv('https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv', (trip) => {
       trip.started_at = new Date(trip.started_at);
       trip.ended_at = new Date(trip.ended_at);
       return trip;
@@ -108,15 +117,12 @@ map.on('load', async () => {
       .domain([0, d3.max(stations, (d) => d.totalTraffic)])
       .range([0, 25]);
 
-    const svg = d3.select('#map').select('svg');
-
     circles = svg
       .selectAll('circle')
       .data(stations, (d) => d.short_name)
       .enter()
       .append('circle')
       .attr('r', d => radiusScale(d.totalTraffic))
-      .attr('fill', 'steelblue')
       .attr('stroke', 'white')
       .attr('stroke-width', 1)
       .attr('opacity', 0.6)
@@ -152,14 +158,26 @@ map.on('load', async () => {
       const filteredStations = computeStationTraffic(stations, filteredTrips);
 
       timeFilter === -1 ? radiusScale.range([0, 25]) : radiusScale.range([3, 50]);
-      
-      circles
+
+      circles = svg.selectAll('circle')
         .data(filteredStations, d => d.short_name)
         .join('circle')
         .attr('r', d => radiusScale(d.totalTraffic))
+        .attr('stroke', 'white')
+        .attr('stroke-width', 1)
+        .attr('opacity', 0.6)
+        .style('pointer-events', 'auto')
         .style('--departure-ratio', (d) =>
           stationFlow(d.departures / d.totalTraffic)
-        );
+        )
+        .each(function (d) {
+          d3.select(this).select('title').remove();
+          d3.select(this)
+            .append('title')
+            .text(`${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`);
+        });
+
+      updatePositions();
     }
 
     function updateTimeDisplay() {
