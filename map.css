@@ -42,3 +42,29 @@ header {
 #selected-time {
   display: block;
 }
+
+#map svg circle,
+.legend > div {
+  --color-departures: steelblue;
+  --color-arrivals: darkorange;
+  --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+  );
+  fill: var(--color);
+}
+
+.legend {
+  display: flex;
+  gap: 1px;
+  margin-block: 1em;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.legend > div {
+  flex: 1;
+  padding: 0.5em 1.5em;
+  color: white;
+}

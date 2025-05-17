@@ -2,6 +2,7 @@ import mapboxgl from 'https://cdn.jsdelivr.net/npm/mapbox-gl@2.15.0/+esm';
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
 console.log('Mapbox GL JS Loaded:', mapboxgl);
+const stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXNoaXRhLXRha2thciIsImEiOiJjbWFyNzV4dXkwOGRyMmpvdHg0NG9ndXdnIn0.l8cw9ny9E996Tn0-ZW5pZg';
 const map = new mapboxgl.Map({
